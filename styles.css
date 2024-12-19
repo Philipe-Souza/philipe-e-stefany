@@ -2,13 +2,13 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    overflow: hidden;
 }
 
 body {
     display: flex;
     justify-self: center;
     background-size: cover;
+    overflow: hidden;
 }
 
 main {
