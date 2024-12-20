@@ -1,7 +1,7 @@
 function contarDias() {
     function atualizarContador() {
         // Data de início (09/09/2024 18:05:00) em UTC
-        const dataInicio = new Date(Date.UTC(2024, 8, 9, 18, 5, 0)); // Setembro é 8 porque os meses começam do 0
+        const dataInicio = new Date(Date.UTC(2024, 8, 9, 0, 5, 0)); // Setembro é 8 porque os meses começam do 0
 
         // Data atual em UTC
         const agora = new Date(); // Data local
@@ -16,14 +16,13 @@ function contarDias() {
         const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24)); // 1000 * 60 * 60 * 24 = milissegundos em um dia
 
         // Calculando as horas restantes após calcular os dias
-        const horas = Math.floor((diferenca % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) + 18;
+        var horas = Math.floor((diferenca % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 
         // Calculando os minutos restantes após calcular as horas
         const minutos = Math.floor((diferenca % (1000 * 60 * 60)) / (1000 * 60));
 
         // Calculando os segundos restantes após calcular os minutos
         const segundos = Math.floor((diferenca % (1000 * 60)) / 1000);
-
 
         // Exibir o contador
         document.getElementById("days").innerText = `${dias} dias, ${horas} horas, ${minutos} minutos e ${segundos} segundos`;
