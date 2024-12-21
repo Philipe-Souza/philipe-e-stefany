@@ -2,6 +2,8 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-weight: 100;
+    overflow: hidden;
 }
 
 body {
@@ -9,6 +11,7 @@ body {
     justify-self: center;
     background-size: cover;
     overflow: hidden;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 main {
@@ -20,47 +23,73 @@ main {
     padding-bottom: 30px;
 }
 
-section {
+.content {
     display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: auto;
+    height: 90%;
     width: auto;
+    background-color: black;
+    border-radius: 5%;
+    text-align: center;
 }
-
 
 img {
     width: 90vw;
-    height: 70vh;
     border-radius: 20px 20px 0 0;
     border-left: 2px solid black;
     border-right: 2px solid black;
     border-top: 2px solid black;
 }
 
-#contador {
-    background-color: black;
+#nos-img {
+    flex-grow: 1;
+    object-fit: cover;
+}
+
+.cardDiv {
     width: 90vw;
-    text-align: center;
-    font-size: 1.5em;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: auto;
+    flex-shrink: 0;
     padding: 10px;
+    font-size: 1.5rem;
     border-radius: 0 0 20px 20px;
+    background-color: black;
     border-left: 2px solid black;
     border-right: 2px solid black;
     border-bottom: 2px solid black;
 }
 
-i {
+#contador {
+    justify-content: center;
+    align-items: center;
+}
+
+#days {
     font-style: normal;
     font-weight: bold;
     color: rgb(255, 90, 90);
+}
+
+#ceu-img {
+    height: 50vh;
+    object-fit: contain;
+}
+
+#ceu h1 {
+    font-size: 1.3rem;
+    margin-top: 10px;
+}
+
+#ceu h2 {
+    font-size: 1.3rem;
+    margin-top: 20px;
+    color: rgb(255, 90, 90);
+}
+
+#ceu p {
+    font-size: 0.9rem;
+    margin: 20px 0;;
 }
 
 @media screen and (min-width: 768px) {
@@ -69,11 +98,23 @@ i {
     }
 
     main {
-        width: 380px;
         padding-bottom: 0;
+        display: flex;
+        gap: 50px;
     }
 
-    #contador {
+    .cardDiv {
         width: 100%;
     }
+
+    .content {
+         display: flex;
+         justify-content: space-between;
+         width: 25%;
+         height: 90%;
+    }
 }
+
+.desabilita-cliques {
+    pointer-events: none;
+  }

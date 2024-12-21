@@ -12,19 +12,33 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 
-<body style="background-image: url('./images/bg.jpg');" onload="contarDias()">
-    
-    <main id= "main-content">
-        <h1 id="clique-aqui">CLIQUE AQUI</h1>
+<body style="background-image: url('./images/bg.jpg');" onload="inicio()">
 
-        <section id="content">
-            <img src="./images/nos.jpg" alt="">
-            <div id="contador">
-                <p>Faz exatamente<br>
-                    <i id="days"></i>
-                <br>que teamo...</p>
+    <main>
+
+        <section id="ceu" class="content">
+            <img id="ceu-img" src="./images/ceu.png" alt="">
+            <div class="cardDiv">
+                <h1>
+                    Assim estava o céu quando nos conhecemos
+                </h1>
+                <h2 id="frase-ceu">
+                    Te encontrar foi como olhar pro céu e encontrar entre todas as estrelas a mais brilhante
+                </h2>
+                <p>Juiz de Fora - MG <br> 09 de setembro de 2024 às 18:05</p>
             </div>
         </section>
+
+        <section id="tempo" class="content">
+            <img id="nos-img" src="./images/nos.jpg" alt="">
+            <div id="contador" class="cardDiv">
+                <p>Faz exatamente<br>
+                    <i id="days"></i>
+                    <br>que teamo...
+                </p>
+            </div>
+        </section>
+
     </main>
 
     <script src="script.js" defer></script>
