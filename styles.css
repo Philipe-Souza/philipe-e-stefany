@@ -29,7 +29,7 @@ main {
     justify-content: center;
     align-items: center;
     height: 90%;
-    width: auto;
+    width: 90vw;
     background-color: black;
     border-radius: 5%;
     text-align: center;
@@ -58,6 +58,7 @@ img {
 /*itens da section auth*/
 
 #auth-div {
+    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -145,7 +146,7 @@ img {
     }
 
     .content {
-         display: none;
+         display: flex;
          justify-content: space-between;
          width: 25%;
          height: 90%;
