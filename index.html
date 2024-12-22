@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -7,14 +7,28 @@
     <title>Philipe & Stefany</title>
     <!-- npm run dev -->
     <link rel="stylesheet" href="styles.css">
-    <meta property="og:title" content="Contador de dias." />
+    <meta property="og:title" content="Teamo há" />
     <meta property="og:description" content="Há quanto tempo eu te amo?" />
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 
-<body style="background-image: url('./images/bg.jpg');" onload="inicio()">
+<body style="background-image: url('./images/bg.jpg');">
 
     <main>
+
+        <section id="auth" class="content">
+            <div id="auth-div">
+                <h1>Código de acesso</h1>
+                <div class="inputs">
+                    <input id="first-input" type="text" maxlength="1" />
+                    <input type="text" maxlength="1" />
+                    <input type="text" maxlength="1" />
+                    <input type="text" maxlength="1" />
+                    <input type="text" maxlength="1" />
+                    <input type="text" maxlength="1" />
+                </div>
+            </div>
+        </section>
 
         <section id="ceu" class="content">
             <img id="ceu-img" src="./images/ceu.png" alt="">
@@ -23,7 +37,6 @@
                     Assim estava o céu quando nos conhecemos
                 </h1>
                 <h2 id="frase-ceu">
-                    Te encontrar foi como olhar pro céu e encontrar entre todas as estrelas a mais brilhante
                 </h2>
                 <p>Juiz de Fora - MG <br> 09 de setembro de 2024 às 18:05</p>
             </div>
@@ -41,7 +54,7 @@
 
     </main>
 
-    <script src="script.js" defer></script>
+    <script type="module" src="script.js" defer></script>
 </body>
 
 </html>
