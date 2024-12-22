@@ -145,7 +145,7 @@ img {
     }
 
     .content {
-         display: flex;
+         display: none;
          justify-content: space-between;
          width: 25%;
          height: 90%;

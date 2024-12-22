@@ -38,7 +38,8 @@ async function loginUser(email, password) {
       password
     );
     console.log("Usuário logado:", userCredential.user);
-    usuarioLogado();
+    authSection.style.display = 'none';
+    ceuSection.style.display = 'flex';
     return userCredential.user;
   } catch (error) {
     alert("codigo incorreto");
@@ -93,6 +94,7 @@ function send() {
 const verificarAcesso = () => {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
+      ceuSection.style.display = "flex";
       const userId = user.uid; // Obtém o ID único do usuário
       const userRef = ref(db, `users/${userId}/ultimoAcesso`);
 
@@ -227,7 +229,6 @@ function inicio() {
   verificarAcesso(); // verifica acesso atualiza conteudos se for um dia diferente
   desativarCliques(); //se a tela for de computador
   contarDias();
-  ceu.style.display = "flex";
 }
 
 //chama função inicio ao carregar a pagina
