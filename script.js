@@ -4,15 +4,21 @@ import {
   getDatabase,
   ref,
   get,
-  set,
+  set
 } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
 import {
   getAuth,
   signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-import { getStorage, ref as storageRef, listAll, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-storage.js";
+import {
+  getStorage,
+  ref as storageRef,
+  listAll,
+  getDownloadURL,
+  deleteObject
+} from "https://www.gstatic.com/firebasejs/11.1.0/firebase-storage.js";
+
 
 // Configuração do Firebase
 const firebaseConfig = {
@@ -56,7 +62,7 @@ const frases = [
   "Pra falar a verdade eu acho que já te conhecia de outras vidas",
   "Pra falar a verdade eu acho que na última vida eu também te queria",
   "Você me libertou, por favor fique",
-  "Eu troco mil estrelas pra te dar a lua, tudo que você quiser",
+  "Eu troco mil estrelas pra te dar a lua, e tudo que você quiser",
   "Deus é bom o tempo todo, e tem nos abençoado muito",
   "Não importa quanto tempo passe, eu sempre fico bobo com seu sorrio",
   "Nunca vou esquecer nosso dia 09/09/2024",
@@ -82,7 +88,7 @@ async function carregarImagemAleatoria(imagemAtual = null) {
         novaImagemURL = await getDownloadURL(imagemAleatoria);
       } while (novaImagemURL === imagemAtual);
 
-      console.log("imagem aleatoria gerada: " + novaImagemURL)
+      deletarImagemAntiga(imagemAtual);
       return novaImagemURL;
     } else {
       console.warn("Nenhuma imagem encontrada na pasta.");
@@ -91,6 +97,26 @@ async function carregarImagemAleatoria(imagemAtual = null) {
   } catch (error) {
     console.error("Erro ao carregar uma imagem aleatória:", error);
     return ""; // Retorne uma URL padrão ou vazia, conforme necessário
+  }
+}
+
+// Função para deletar o arquivo da imagem
+async function deletarImagemAntiga(imagemURL) {
+  try {
+    // Extrai o caminho da imagem da URL
+    const caminhoImagem = decodeURIComponent(imagemURL.split('/o/')[1].split('?')[0]);
+    console.log("Caminho extraído:", caminhoImagem);
+
+    // Inicializa o Storage e cria a referência usando storageRef
+    const storage = getStorage();
+    const imagemRef = storageRef(storage, caminhoImagem); // Use storageRef aqui
+    console.log("Referência criada:", imagemRef);
+
+    // Deleta o arquivo
+    await deleteObject(imagemRef);
+    console.log("Arquivo excluído com sucesso!");
+  } catch (error) {
+    console.error("Erro ao excluir o arquivo:", error);
   }
 }
 
@@ -133,6 +159,7 @@ function verificarAcesso() {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       exibirSeccao(ceuSection);
+
       const userRef = ref(db, `users/${user.uid}/ultimoAcesso`);
       const dataAtual = obterDataAtual();
       const fraseAtual = frases[0];
@@ -159,9 +186,9 @@ function verificarAcesso() {
             const novaImagem = await carregarImagemAleatoria(ultimoAcesso.imagem); // Gera uma nova imagem diferente da atual
             await set(userRef, { data: dataAtual, frase: novaFrase, imagem: novaImagem });
 
-            console.log("retornou image: " + novaImagem);
             fraseCeu.textContent = novaFrase;
             imgNos.src = novaImagem;
+
           } else {
             fraseCeu.textContent = ultimoAcesso.frase;
             imgNos.src = ultimoAcesso.imagem; // Recarrega a imagem anterior
@@ -198,20 +225,20 @@ function contarDias() {
 // Desativa cliques em elementos específicos para larguras maiores
 function desativarCliques() {
   const largura = window.screen.width;
-  if(largura > 700){
-    ceuSection.classList.add("desabilita-cliques"); 
+  if (largura > 700) {
+    ceuSection.classList.add("desabilita-cliques");
   }
 }
 
 // Exibe a seção desejada
 function exibirSeccao(seccao) {
   const largura = window.screen.width;
-  if(largura < 700){
+  if (largura < 700) {
     authSection.style.display = "none";
     ceuSection.style.display = "none";
     tempoSection.style.display = "none";
     seccao.style.display = "flex";
-  }else{
+  } else {
     authSection.style.display = "none";
   }
 }
