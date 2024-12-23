@@ -12,6 +12,7 @@ import {
   onAuthStateChanged,
   signOut,
 } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+import { getStorage, ref as storageRef, listAll, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-storage.js";
 
 // Configuração do Firebase
 const firebaseConfig = {
@@ -28,6 +29,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
+const storage = getStorage(app);
 
 // Seletores de elementos DOM
 const inputs = document.querySelectorAll(".inputs input");
@@ -66,11 +68,36 @@ const frases = [
   "Eu teamo, em cada detalhe, em cada momento, a cada batida do meu coração"
 ];
 
+// Função para carregar uma imagem aleatória
+async function carregarImagemAleatoria(imagemAtual = null) {
+  try {
+    const pastaImagens = storageRef(storage, "images/nos/");
+    const arquivos = await listAll(pastaImagens);
+
+    if (arquivos.items.length > 0) {
+      let novaImagemURL;
+
+      do {
+        const imagemAleatoria = arquivos.items[Math.floor(Math.random() * arquivos.items.length)];
+        novaImagemURL = await getDownloadURL(imagemAleatoria);
+      } while (novaImagemURL === imagemAtual);
+
+      console.log("imagem aleatoria gerada: " + novaImagemURL)
+      return novaImagemURL;
+    } else {
+      console.warn("Nenhuma imagem encontrada na pasta.");
+      return ""; // Retorne uma URL padrão ou vazia, conforme necessário
+    }
+  } catch (error) {
+    console.error("Erro ao carregar uma imagem aleatória:", error);
+    return ""; // Retorne uma URL padrão ou vazia, conforme necessário
+  }
+}
+
 // Função para login
 async function loginUser(email, password) {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    console.log("Usuário logado:", userCredential.user);
     exibirSeccao(ceuSection);
     return userCredential.user;
   } catch (error) {
@@ -107,27 +134,37 @@ function verificarAcesso() {
     if (user) {
       exibirSeccao(ceuSection);
       const userRef = ref(db, `users/${user.uid}/ultimoAcesso`);
+      const dataAtual = obterDataAtual();
+      const fraseAtual = frases[0];
+      const imgNos = document.getElementById("nos-img");
 
       try {
         const snapshot = await get(userRef);
-        const dataAtual = obterDataAtual();
-        const fraseAtual = frases[0];
 
         if (!snapshot.exists()) {
-          await set(userRef, { data: dataAtual, frase: fraseAtual });
+          const imagemInicial = await carregarImagemAleatoria(); // Obtém a primeira imagem
+          await set(userRef, { data: dataAtual, frase: fraseAtual, imagem: imagemInicial });
           fraseCeu.textContent = fraseAtual;
+          imgNos.src = imagemInicial;
         } else {
           const ultimoAcesso = snapshot.val();
+
+          // Atualiza frase se a data mudou
           if (ultimoAcesso.data !== dataAtual) {
             let novaFrase;
             do {
               novaFrase = frases[Math.floor(Math.random() * frases.length)];
             } while (novaFrase === ultimoAcesso.frase);
 
-            await set(userRef, { data: dataAtual, frase: novaFrase });
+            const novaImagem = await carregarImagemAleatoria(ultimoAcesso.imagem); // Gera uma nova imagem diferente da atual
+            await set(userRef, { data: dataAtual, frase: novaFrase, imagem: novaImagem });
+
+            console.log("retornou image: " + novaImagem);
             fraseCeu.textContent = novaFrase;
+            imgNos.src = novaImagem;
           } else {
             fraseCeu.textContent = ultimoAcesso.frase;
+            imgNos.src = ultimoAcesso.imagem; // Recarrega a imagem anterior
           }
         }
       } catch (error) {
