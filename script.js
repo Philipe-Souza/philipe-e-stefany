@@ -1,4 +1,3 @@
-// Importações Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
 import {
   getDatabase,
@@ -9,18 +8,10 @@ import {
 import {
   getAuth,
   signInWithEmailAndPassword,
-  onAuthStateChanged
+  onAuthStateChanged,
+  signOut,
 } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-import {
-  getStorage,
-  ref as storageRef,
-  listAll,
-  getDownloadURL,
-  deleteObject
-} from "https://www.gstatic.com/firebasejs/11.1.0/firebase-storage.js";
 
-
-// Configuração do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyC_QqyayWLpCzeC6hyaL72s1zsvux_QLtY",
   authDomain: "stefany-e-philipe.firebaseapp.com",
@@ -31,16 +22,12 @@ const firebaseConfig = {
   appId: "1:754725748316:web:39699d9e75fefb85f43099",
 };
 
-// Inicialização Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
-const storage = getStorage(app);
 
-// Seletores de elementos DOM
 const inputs = document.querySelectorAll(".inputs input");
 const firstInput = document.getElementById("first-input");
-<<<<<<< HEAD
 
 // Função para login
 async function loginUser(email, password) {
@@ -155,15 +142,15 @@ const verificarAcesso = () => {
   });
 };
 
-=======
->>>>>>> 123ae73a5b3eb35d47e3b925c673af8a4866c26c
 const tempoSection = document.getElementById("tempo");
 const ceuSection = document.getElementById("ceu");
 const authSection = document.getElementById("auth");
-const fraseCeu = document.getElementById("frase-ceu");
+
 const allSections = document.querySelectorAll(".content");
 
-// Lista de frases
+const nosImg = document.getElementById("nos-img");
+const fraseCeu = document.getElementById("frase-ceu");
+
 const frases = [
   "Te encontrar foi como olhar pro céu e encontrar entre todas as estrelas a mais brilhante",
   "Voce coloriu minha vida cinza amor",
@@ -179,7 +166,7 @@ const frases = [
   "Pra falar a verdade eu acho que já te conhecia de outras vidas",
   "Pra falar a verdade eu acho que na última vida eu também te queria",
   "Você me libertou, por favor fique",
-  "Eu troco mil estrelas pra te dar a lua, e tudo que você quiser",
+  "Eu troco mil estrelas pra te dar a lua, tudo que você quiser",
   "Deus é bom o tempo todo, e tem nos abençoado muito",
   "Não importa quanto tempo passe, eu sempre fico bobo com seu sorrio",
   "Nunca vou esquecer nosso dia 09/09/2024",
@@ -191,7 +178,6 @@ const frases = [
   "Eu teamo, em cada detalhe, em cada momento, a cada batida do meu coração"
 ];
 
-<<<<<<< HEAD
 const musicas = [
   "AmorLivre.mp3",
   "Incondicional.mp3",
@@ -216,178 +202,52 @@ const contarDias = () => {
       agora.getUTCMinutes(),
       agora.getUTCSeconds()
     );
-=======
-// Função para carregar uma imagem aleatória
-async function carregarImagemAleatoria(imagemAtual = null) {
-  try {
-    const pastaImagens = storageRef(storage, "images/nos/");
-    const arquivos = await listAll(pastaImagens);
->>>>>>> 123ae73a5b3eb35d47e3b925c673af8a4866c26c
 
-    if (arquivos.items.length > 0) {
-      let novaImagemURL;
-
-      do {
-        const imagemAleatoria = arquivos.items[Math.floor(Math.random() * arquivos.items.length)];
-        novaImagemURL = await getDownloadURL(imagemAleatoria);
-      } while (novaImagemURL === imagemAtual);
-
-      deletarImagemAntiga(imagemAtual);
-      return novaImagemURL;
-    } else {
-      console.warn("Nenhuma imagem encontrada na pasta.");
-      return ""; // Retorne uma URL padrão ou vazia, conforme necessário
-    }
-  } catch (error) {
-    console.error("Erro ao carregar uma imagem aleatória:", error);
-    return ""; // Retorne uma URL padrão ou vazia, conforme necessário
-  }
-}
-
-// Função para deletar o arquivo da imagem
-async function deletarImagemAntiga(imagemURL) {
-  try {
-    // Extrai o caminho da imagem da URL
-    const caminhoImagem = decodeURIComponent(imagemURL.split('/o/')[1].split('?')[0]);
-    console.log("Caminho extraído:", caminhoImagem);
-
-    // Inicializa o Storage e cria a referência usando storageRef
-    const storage = getStorage();
-    const imagemRef = storageRef(storage, caminhoImagem); // Use storageRef aqui
-    console.log("Referência criada:", imagemRef);
-
-    // Deleta o arquivo
-    await deleteObject(imagemRef);
-    console.log("Arquivo excluído com sucesso!");
-  } catch (error) {
-    console.error("Erro ao excluir o arquivo:", error);
-  }
-}
-
-// Função para login
-async function loginUser(email, password) {
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    exibirSeccao(ceuSection);
-    return userCredential.user;
-  } catch (error) {
-    alert("Código incorreto");
-    limparInputs();
-    console.error("Erro ao fazer login:", error.message);
-    throw error;
-  }
-}
-
-// Configura eventos de inputs
-function configurarInputs() {
-  inputs.forEach((input, index) => {
-    input.addEventListener("input", () => {
-      if (input.value && index < inputs.length - 1) inputs[index + 1].focus();
-    });
-
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Backspace" && !input.value && index > 0) inputs[index - 1].focus();
-      if (e.key === "Enter") enviarSenha();
-    });
-  });
-}
-
-// Captura e concatena a senha dos inputs
-function enviarSenha() {
-  const senha = Array.from(inputs).map(input => input.value).join("");
-  loginUser("psouza191@gmail.com", senha);
-}
-
-// Verifica o acesso do usuário e gerencia exibição de frases
-function verificarAcesso() {
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      exibirSeccao(ceuSection);
-
-      const userRef = ref(db, `users/${user.uid}/ultimoAcesso`);
-      const dataAtual = obterDataAtual();
-      const fraseAtual = frases[0];
-      const imgNos = document.getElementById("nos-img");
-
-      try {
-        const snapshot = await get(userRef);
-
-        if (!snapshot.exists()) {
-          const imagemInicial = await carregarImagemAleatoria(); // Obtém a primeira imagem
-          await set(userRef, { data: dataAtual, frase: fraseAtual, imagem: imagemInicial });
-          fraseCeu.textContent = fraseAtual;
-          imgNos.src = imagemInicial;
-        } else {
-          const ultimoAcesso = snapshot.val();
-
-          // Atualiza frase se a data mudou
-          if (ultimoAcesso.data !== dataAtual) {
-            let novaFrase;
-            do {
-              novaFrase = frases[Math.floor(Math.random() * frases.length)];
-            } while (novaFrase === ultimoAcesso.frase);
-
-            const novaImagem = await carregarImagemAleatoria(ultimoAcesso.imagem); // Gera uma nova imagem diferente da atual
-            await set(userRef, { data: dataAtual, frase: novaFrase, imagem: novaImagem });
-
-            fraseCeu.textContent = novaFrase;
-            imgNos.src = novaImagem;
-
-          } else {
-            fraseCeu.textContent = ultimoAcesso.frase;
-            imgNos.src = ultimoAcesso.imagem; // Recarrega a imagem anterior
-          }
-        }
-      } catch (error) {
-        console.error("Erro ao acessar o banco de dados:", error);
-      }
-    } else {
-      exibirSeccao(authSection);
-      firstInput.focus();
-    }
-  });
-}
-
-// Atualiza o contador de tempo desde uma data específica
-function contarDias() {
-  function atualizarContador() {
-    const dataInicio = new Date(Date.UTC(2024, 8, 9, 18, 5, 0));
-    const agora = new Date();
-    const diferenca = agora - dataInicio;
-
-    const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
-    const horas = Math.floor((diferenca % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    // Diferença entre a data atual e a data de início
+    const diferenca = agoraUTC - dataInicio;
+    // Calculando o total de dias passados, de forma exata
+    const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24)); // 1000 * 60 * 60 * 24 = milissegundos em um dia
+    // Calculando as horas restantes após calcular os dias
+    var horas = Math.floor(
+      (diferenca % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    // Calculando os minutos restantes após calcular as horas
     const minutos = Math.floor((diferenca % (1000 * 60 * 60)) / (1000 * 60));
+    // Calculando os segundos restantes após calcular os minutos
     const segundos = Math.floor((diferenca % (1000 * 60)) / 1000);
 
-    document.getElementById("days").innerText = `${dias} dias, ${horas} horas, ${minutos} minutos e ${segundos} segundos`;
+    // Exibir o contador
+    document.getElementById(
+      "days"
+    ).innerText = `${dias} dias, ${horas} horas, ${minutos} minutos e ${segundos} segundos`;
+    // Atualizar o contador a cada 1 segundo
     setTimeout(atualizarContador, 1000);
   }
+
+  // Inicializar o contador
   atualizarContador();
-}
+};
 
-// Desativa cliques em elementos específicos para larguras maiores
-function desativarCliques() {
-  const largura = window.screen.width;
-  if (largura > 700) {
-    ceuSection.classList.add("desabilita-cliques");
-  }
-}
-
-// Exibe a seção desejada
-function exibirSeccao(seccao) {
-  const largura = window.screen.width;
-  if (largura < 700) {
-    authSection.style.display = "none";
-    ceuSection.style.display = "none";
-    tempoSection.style.display = "none";
-    seccao.style.display = "flex";
+//desativa os cliques na classe informada se largura > celular
+const desativarCliques = () => {
+  var largura = window.screen.width;
+  if (largura > 500) {
+    allSections.forEach((section) => {
+      section.classList.add("desabilita-cliques");
+    });
   } else {
-    authSection.style.display = "none";
+    allSections.forEach((section) => {
+      section.classList.remove("desabilita-cliques");
+    });
   }
 }
 
-<<<<<<< HEAD
+function inicio() {
+  verificarAcesso(); // verifica acesso atualiza conteudos se for um dia diferente
+  desativarCliques(); //se a tela for de computador
+  contarDias();
+}
+
 function tocarMusica(musica) {
   const audio = new Audio(`assets/${musica}`);
   audio.loop = true;
@@ -398,36 +258,14 @@ function tocarMusica(musica) {
 document.addEventListener("DOMContentLoaded", () => {
   inicio();
 });
-=======
-// Limpa os inputs de senha
-function limparInputs() {
-  inputs.forEach(input => input.value = "");
-  firstInput.focus();
-}
->>>>>>> 123ae73a5b3eb35d47e3b925c673af8a4866c26c
 
-// Retorna a data no formato YYYY-MM-DD
-function obterDataAtual() {
-  return new Date().toISOString().split("T")[0];
-}
-
-// Evento de clique na seção "ceu"
 ceuSection.addEventListener("click", () => {
-<<<<<<< HEAD
   ceuSection.style.display = "none";
   tempoSection.style.display = "flex";
-=======
-  exibirSeccao(tempoSection);
-  const audio = new Audio("assets/song.mp3");
-  audio.loop = true;
-  audio.play();
->>>>>>> 123ae73a5b3eb35d47e3b925c673af8a4866c26c
 });
 
-// Inicializa as funcionalidades ao carregar a página
-document.addEventListener("DOMContentLoaded", () => {
-  desativarCliques();
-  configurarInputs();
-  verificarAcesso();
-  contarDias();
-});
+// Retorna a data no formato 'YYYY-MM-DD'
+const obterDataAtual = () => {
+  const data = new Date();
+  return data.toISOString().split("T")[0]; 
+};
