@@ -1,3 +1,4 @@
+// Importações Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
 import {
   getDatabase,
@@ -8,10 +9,18 @@ import {
 import {
   getAuth,
   signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+import {
+  getStorage,
+  ref as storageRef,
+  listAll,
+  getDownloadURL,
+  deleteObject
+} from "https://www.gstatic.com/firebasejs/11.1.0/firebase-storage.js";
 
+
+// Configuração do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyC_QqyayWLpCzeC6hyaL72s1zsvux_QLtY",
   authDomain: "stefany-e-philipe.firebaseapp.com",
@@ -22,12 +31,102 @@ const firebaseConfig = {
   appId: "1:754725748316:web:39699d9e75fefb85f43099",
 };
 
+// Inicialização Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
+const storage = getStorage(app);
 
+// Seletores de elementos DOM
 const inputs = document.querySelectorAll(".inputs input");
 const firstInput = document.getElementById("first-input");
+const tempoSection = document.getElementById("tempo");
+const ceuSection = document.getElementById("ceu");
+const authSection = document.getElementById("auth");
+const fraseCeu = document.getElementById("frase-ceu");
+const allSections = document.querySelectorAll(".content");
+const imgNos = document.getElementById("nos-img");
+
+const frases = [
+  "Te encontrar foi como olhar pro céu e encontrar entre todas as estrelas a mais brilhante",
+  "Voce coloriu minha vida cinza amor",
+  "E a cada sorriso seu meu mundo ganha mais cor",
+  "Tenho certeza que vamos conquistar nossos sonhos",
+  "Sortudo sou eu. Sete bilhões de pessoas no mundo. E você me escolheu.",
+  "Se o amor bateu na nossa porta, que sorte a nossa",
+  "Tava escrito nas estrelas que eu ia encontrar você",
+  "Tem brinquedo espalhado pela casa toda e as paredes rabiscadas com o giz de cera",
+  "...Mudou de tal maneira, nossa vida já não é a mesma",
+  "Ser herói de alguém e, melhor ainda, ter do lado a Mulher Maravilha",
+  "Me diz quem não fica louco nesse jeito meigo bobo seu",
+  "Pra falar a verdade eu acho que já te conhecia de outras vidas",
+  "Pra falar a verdade eu acho que na última vida eu também te queria",
+  "Você me libertou, por favor fique",
+  "Eu troco mil estrelas pra te dar a lua, tudo que você quiser",
+  "Deus é bom o tempo todo, e tem nos abençoado muito",
+  "Não importa quanto tempo passe, eu sempre fico bobo com seu sorrio",
+  "Nunca vou esquecer nosso dia 09/09/2024",
+  "Você é incrivel, maravilhosa, perfeita, minha namorada",
+  "Teamo desde sempre e pra sempre vou te amar",
+  "Em breve vamos conquistar nossa casinha",
+  "Nosso sonhos são maravilhosos e eles vão se realizar",
+  "Reza comigo ai",
+  "Eu teamo, em cada detalhe, em cada momento, a cada batida do meu coração"
+];
+
+const musicas = [
+  "AmorLivre.mp3",
+  "Incondicional.mp3",
+  "Maria.mp3",
+  "TantosOlharesPorAi.mp3",
+  "TemSentimento.mp3"
+]
+
+// Função para carregar uma imagem aleatória
+async function carregarImagemAleatoria(imagemAtual = null) {
+  try {
+    const pastaImagens = storageRef(storage, "images/nos/");
+    const arquivos = await listAll(pastaImagens);
+
+    if (arquivos.items.length > 0) {
+      let novaImagemURL;
+
+      do {
+        const imagemAleatoria = arquivos.items[Math.floor(Math.random() * arquivos.items.length)];
+        novaImagemURL = await getDownloadURL(imagemAleatoria);
+      } while (novaImagemURL === imagemAtual);
+
+      deletarImagemAntiga(imagemAtual);
+      return novaImagemURL;
+    } else {
+      console.warn("Nenhuma imagem encontrada na pasta.");
+      return ""; // Retorne uma URL padrão ou vazia, conforme necessário
+    }
+  } catch (error) {
+    console.error("Erro ao carregar uma imagem aleatória:", error);
+    return ""; // Retorne uma URL padrão ou vazia, conforme necessário
+  }
+}
+
+// Função para deletar o arquivo da imagem
+async function deletarImagemAntiga(imagemURL) {
+  try {
+    // Extrai o caminho da imagem da URL
+    const caminhoImagem = decodeURIComponent(imagemURL.split('/o/')[1].split('?')[0]);
+    console.log("Caminho extraído:", caminhoImagem);
+
+    // Inicializa o Storage e cria a referência usando storageRef
+    const storage = getStorage();
+    const imagemRef = storageRef(storage, caminhoImagem); // Use storageRef aqui
+    console.log("Referência criada:", imagemRef);
+
+    // Deleta o arquivo
+    await deleteObject(imagemRef);
+    console.log("Arquivo excluído com sucesso!");
+  } catch (error) {
+    console.error("Erro ao excluir o arquivo:", error);
+  }
+}
 
 // Função para login
 async function loginUser(email, password) {
@@ -106,31 +205,36 @@ const verificarAcesso = () => {
 
         if (!snapshot.exists()) {
           // Primeiro acesso: salva a data e a frase no Firebase
+          const imagemInicial = await carregarImagemAleatoria(); // Obtém a primeira imagem
+          await set(userRef, { data: dataAtual, frase: fraseAtual, imagem: imagemInicial, musica: musicaAtual});
           fraseCeu.textContent = fraseAtual;
           tocarMusica(musicaAtual); // toca musica
-          await set(userRef, { data: dataAtual, frase: fraseAtual, musica: musicaAtual});
+          imgNos.src = imagemInicial;
         } else {
           const ultimoAcesso = snapshot.val();
 
           if (ultimoAcesso.data !== dataAtual) {
-            // Acessou em um novo dia: atualiza a data e frase no Firebase
+            // Acessou em um novo dia: atualiza a data, frase, musica e imagem no Firebase
+
+            const novaImagem = await carregarImagemAleatoria(ultimoAcesso.imagem); // Gera uma nova imagem diferente da atual
+
             do {
               var frase = frases[Math.floor(Math.random() * frases.length)];
             } while (frase === ultimoAcesso.frase);
 
-            // Acessou em um novo dia: atualiza a data e frase no Firebase
             do {
               var music = musicas[Math.floor(Math.random() * frases.length)];
             } while (music === ultimoAcesso.musica);
 
-            await set(userRef, { data: dataAtual, frase: frase, musica: music});
+            await set(userRef, { data: dataAtual, frase: frase, imagem: novaImagem, musica: music});
+            imgNos.src = novaImagem;
             fraseCeu.textContent = frase; // Exibe no HTML
             tocarMusica(music); // toca musica
           } else {
             // Já acessou hoje: exibe a frase atual do banco
+            imgNos.src = ultimoAcesso.imagem; // Recarrega a imagem anterior
             fraseCeu.textContent = ultimoAcesso.frase};
             tocarMusica(ultimoAcesso.musica); // toca musica
-            
           }
       } catch (error) {
         console.error("Erro ao acessar o banco de dados:", error);
@@ -141,50 +245,6 @@ const verificarAcesso = () => {
     }
   });
 };
-
-const tempoSection = document.getElementById("tempo");
-const ceuSection = document.getElementById("ceu");
-const authSection = document.getElementById("auth");
-
-const allSections = document.querySelectorAll(".content");
-
-const nosImg = document.getElementById("nos-img");
-const fraseCeu = document.getElementById("frase-ceu");
-
-const frases = [
-  "Te encontrar foi como olhar pro céu e encontrar entre todas as estrelas a mais brilhante",
-  "Voce coloriu minha vida cinza amor",
-  "E a cada sorriso seu meu mundo ganha mais cor",
-  "Tenho certeza que vamos conquistar nossos sonhos",
-  "Sortudo sou eu. Sete bilhões de pessoas no mundo. E você me escolheu.",
-  "Se o amor bateu na nossa porta, que sorte a nossa",
-  "Tava escrito nas estrelas que eu ia encontrar você",
-  "Tem brinquedo espalhado pela casa toda e as paredes rabiscadas com o giz de cera",
-  "...Mudou de tal maneira, nossa vida já não é a mesma",
-  "Ser herói de alguém e, melhor ainda, ter do lado a Mulher Maravilha",
-  "Me diz quem não fica louco nesse jeito meigo bobo seu",
-  "Pra falar a verdade eu acho que já te conhecia de outras vidas",
-  "Pra falar a verdade eu acho que na última vida eu também te queria",
-  "Você me libertou, por favor fique",
-  "Eu troco mil estrelas pra te dar a lua, tudo que você quiser",
-  "Deus é bom o tempo todo, e tem nos abençoado muito",
-  "Não importa quanto tempo passe, eu sempre fico bobo com seu sorrio",
-  "Nunca vou esquecer nosso dia 09/09/2024",
-  "Você é incrivel, maravilhosa, perfeita, minha namorada",
-  "Teamo desde sempre e pra sempre vou te amar",
-  "Em breve vamos conquistar nossa casinha",
-  "Nosso sonhos são maravilhosos e eles vão se realizar",
-  "Reza comigo ai",
-  "Eu teamo, em cada detalhe, em cada momento, a cada batida do meu coração"
-];
-
-const musicas = [
-  "AmorLivre.mp3",
-  "Incondicional.mp3",
-  "Maria.mp3",
-  "TantosOlharesPorAi.mp3",
-  "TemSentimento.mp3"
-]
 
 //calcula o tempo passado desde 09-09-2024 as 18:05
 const contarDias = () => {
