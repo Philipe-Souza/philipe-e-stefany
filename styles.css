@@ -130,7 +130,7 @@ img {
 }
 
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 700px) {
     img {
         width: 100%;
     }
