@@ -102,11 +102,13 @@ const verificarAcesso = () => {
         const snapshot = await get(userRef);
         const dataAtual = obterDataAtual();
         var fraseAtual = "Te encontrar foi como olhar pro céu e encontrar entre todas as estrelas a mais brilhante";
+        var musicaAtual = "Maria.mp3";
 
         if (!snapshot.exists()) {
           // Primeiro acesso: salva a data e a frase no Firebase
           fraseCeu.textContent = fraseAtual;
-          await set(userRef, { data: dataAtual, frase: fraseAtual });
+          tocarMusica(musicaAtual); // toca musica
+          await set(userRef, { data: dataAtual, frase: fraseAtual, musica: musicaAtual});
         } else {
           const ultimoAcesso = snapshot.val();
 
@@ -116,11 +118,18 @@ const verificarAcesso = () => {
               var frase = frases[Math.floor(Math.random() * frases.length)];
             } while (frase === ultimoAcesso.frase);
 
-            await set(userRef, { data: dataAtual, frase: frase });
+            // Acessou em um novo dia: atualiza a data e frase no Firebase
+            do {
+              var music = musicas[Math.floor(Math.random() * frases.length)];
+            } while (music === ultimoAcesso.musica);
+
+            await set(userRef, { data: dataAtual, frase: frase, musica: music});
             fraseCeu.textContent = frase; // Exibe no HTML
+            tocarMusica(music); // toca musica
           } else {
             // Já acessou hoje: exibe a frase atual do banco
             fraseCeu.textContent = ultimoAcesso.frase};
+            tocarMusica(ultimoAcesso.musica); // toca musica
             
           }
       } catch (error) {
@@ -168,6 +177,14 @@ const frases = [
   "Reza comigo ai",
   "Eu teamo, em cada detalhe, em cada momento, a cada batida do meu coração"
 ];
+
+const musicas = [
+  "AmorLivre.mp3",
+  "Incondicional.mp3",
+  "Maria.mp3",
+  "TantosOlharesPorAi.mp3",
+  "TemSentimento.mp3"
+]
 
 //calcula o tempo passado desde 09-09-2024 as 18:05
 const contarDias = () => {
@@ -231,6 +248,12 @@ function inicio() {
   contarDias();
 }
 
+function tocarMusica(musica) {
+  const audio = new Audio(`assets/${musica}`);
+  audio.loop = true;
+  audio.play();
+};
+
 //chama função inicio ao carregar a pagina
 document.addEventListener("DOMContentLoaded", () => {
   inicio();
@@ -239,9 +262,6 @@ document.addEventListener("DOMContentLoaded", () => {
 ceuSection.addEventListener("click", () => {
   ceuSection.style.display = "none";
   tempoSection.style.display = "flex";
-  const audio = new Audio("assets/song.mp3");
-  audio.loop = true;
-  audio.play();
 });
 
 // Retorna a data no formato 'YYYY-MM-DD'
