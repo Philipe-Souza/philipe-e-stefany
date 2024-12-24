@@ -136,7 +136,6 @@ async function loginUser(email, password) {
       email,
       password
     );
-    console.log("Usuário logado:", userCredential.user);
     authSection.style.display = 'none';
     ceuSection.style.display = 'flex';
     return userCredential.user;
