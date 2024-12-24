@@ -129,6 +129,10 @@ img {
     color: rgb(255, 90, 90);
 }
 
+#play-btn {
+    display: none;
+}
+
 
 @media screen and (min-width: 700px) {
     img {
@@ -150,6 +154,14 @@ img {
          justify-content: space-between;
          width: 25%;
          height: 90%;
+    }
+
+    #play-btn {
+        display: block;
+        position: absolute;
+        height: 200px;
+        width: 200px;
+        border: none;
     }
 }
 

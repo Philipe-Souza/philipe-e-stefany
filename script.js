@@ -46,6 +46,7 @@ const authSection = document.getElementById("auth");
 const fraseCeu = document.getElementById("frase-ceu");
 const allSections = document.querySelectorAll(".content");
 const imgNos = document.getElementById("nos-img");
+const playBtn = document.getElementById("play-btn");
 var musicaAtual = "Maria.mp3";
 
 const frases = [
@@ -193,6 +194,7 @@ function send() {
 const verificarAcesso = () => {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
+      authSection.style.display = "none";
       ceuSection.style.display = "flex";
       const userId = user.uid; // Obtém o ID único do usuário
       const userRef = ref(db, `users/${userId}/ultimoAcesso`);
@@ -332,6 +334,12 @@ tempoSection.addEventListener("click", () => {
   ceuSection.style.display = "flex";
   tempoSection.style.display = "none";
 });
+
+playBtn.addEventListener("click", () => {
+  tocarMusica();
+  playBtn.style.display = "none";
+});
+
 
 // Retorna a data no formato 'YYYY-MM-DD'
 const obterDataAtual = () => {
