@@ -305,10 +305,16 @@ function inicio() {
   contarDias();
 }
 
+let audio;
 function tocarMusica() {
-  const audio = new Audio(`assets/${musicaAtual}`);
-  audio.loop = true;
-  audio.play();
+  if (!audio) {
+    audio = new Audio(`assets/${musicaAtual}`);
+    audio.loop = true;
+  }
+
+  if (audio.paused) {
+    audio.play();
+  }
 };
 
 //chama função inicio ao carregar a pagina
@@ -320,6 +326,11 @@ ceuSection.addEventListener("click", () => {
   ceuSection.style.display = "none";
   tempoSection.style.display = "flex";
   tocarMusica();
+});
+
+tempoSection.addEventListener("click", () => {
+  ceuSection.style.display = "flex";
+  tempoSection.style.display = "none";
 });
 
 // Retorna a data no formato 'YYYY-MM-DD'
