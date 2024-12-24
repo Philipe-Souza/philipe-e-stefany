@@ -40,6 +40,7 @@ const storage = getStorage(app);
 // Seletores de elementos DOM
 const inputs = document.querySelectorAll(".inputs input");
 const firstInput = document.getElementById("first-input");
+<<<<<<< HEAD
 
 // Função para login
 async function loginUser(email, password) {
@@ -114,11 +115,13 @@ const verificarAcesso = () => {
         const snapshot = await get(userRef);
         const dataAtual = obterDataAtual();
         var fraseAtual = "Te encontrar foi como olhar pro céu e encontrar entre todas as estrelas a mais brilhante";
+        var musicaAtual = "Maria.mp3";
 
         if (!snapshot.exists()) {
           // Primeiro acesso: salva a data e a frase no Firebase
           fraseCeu.textContent = fraseAtual;
-          await set(userRef, { data: dataAtual, frase: fraseAtual });
+          tocarMusica(musicaAtual); // toca musica
+          await set(userRef, { data: dataAtual, frase: fraseAtual, musica: musicaAtual});
         } else {
           const ultimoAcesso = snapshot.val();
 
@@ -128,11 +131,18 @@ const verificarAcesso = () => {
               var frase = frases[Math.floor(Math.random() * frases.length)];
             } while (frase === ultimoAcesso.frase);
 
-            await set(userRef, { data: dataAtual, frase: frase });
+            // Acessou em um novo dia: atualiza a data e frase no Firebase
+            do {
+              var music = musicas[Math.floor(Math.random() * frases.length)];
+            } while (music === ultimoAcesso.musica);
+
+            await set(userRef, { data: dataAtual, frase: frase, musica: music});
             fraseCeu.textContent = frase; // Exibe no HTML
+            tocarMusica(music); // toca musica
           } else {
             // Já acessou hoje: exibe a frase atual do banco
             fraseCeu.textContent = ultimoAcesso.frase};
+            tocarMusica(ultimoAcesso.musica); // toca musica
             
           }
       } catch (error) {
@@ -145,6 +155,8 @@ const verificarAcesso = () => {
   });
 };
 
+=======
+>>>>>>> 123ae73a5b3eb35d47e3b925c673af8a4866c26c
 const tempoSection = document.getElementById("tempo");
 const ceuSection = document.getElementById("ceu");
 const authSection = document.getElementById("auth");
@@ -179,6 +191,7 @@ const frases = [
   "Eu teamo, em cada detalhe, em cada momento, a cada batida do meu coração"
 ];
 
+<<<<<<< HEAD
 const musicas = [
   "AmorLivre.mp3",
   "Incondicional.mp3",
@@ -187,11 +200,29 @@ const musicas = [
   "TemSentimento.mp3"
 ]
 
+//calcula o tempo passado desde 09-09-2024 as 18:05
+const contarDias = () => {
+  function atualizarContador() {
+    // Data de início (09/09/2024 18:05:00) em UTC
+    const dataInicio = new Date(Date.UTC(2024, 8, 9, 0, 5, 0)); // Setembro é 8 porque os meses começam do 0
+    // Data atual em UTC
+    const agora = new Date(); // Data local
+    // Para garantir que estamos calculando em relação ao UTC, ajustamos as horas para UTC
+    const agoraUTC = new Date(
+      agora.getUTCFullYear(),
+      agora.getUTCMonth(),
+      agora.getUTCDate(),
+      agora.getUTCHours(),
+      agora.getUTCMinutes(),
+      agora.getUTCSeconds()
+    );
+=======
 // Função para carregar uma imagem aleatória
 async function carregarImagemAleatoria(imagemAtual = null) {
   try {
     const pastaImagens = storageRef(storage, "images/nos/");
     const arquivos = await listAll(pastaImagens);
+>>>>>>> 123ae73a5b3eb35d47e3b925c673af8a4866c26c
 
     if (arquivos.items.length > 0) {
       let novaImagemURL;
@@ -356,30 +387,41 @@ function exibirSeccao(seccao) {
   }
 }
 
-// Limpa os inputs de senha
-function limparInputs() {
-  inputs.forEach(input => input.value = "");
-  firstInput.focus();
-}
-
-// Retorna a data no formato YYYY-MM-DD
-function obterDataAtual() {
-  return new Date().toISOString().split("T")[0];
-}
-
+<<<<<<< HEAD
 function tocarMusica(musica) {
   const audio = new Audio(`assets/${musica}`);
   audio.loop = true;
   audio.play();
 };
 
+//chama função inicio ao carregar a pagina
+document.addEventListener("DOMContentLoaded", () => {
+  inicio();
+});
+=======
+// Limpa os inputs de senha
+function limparInputs() {
+  inputs.forEach(input => input.value = "");
+  firstInput.focus();
+}
+>>>>>>> 123ae73a5b3eb35d47e3b925c673af8a4866c26c
+
+// Retorna a data no formato YYYY-MM-DD
+function obterDataAtual() {
+  return new Date().toISOString().split("T")[0];
+}
+
 // Evento de clique na seção "ceu"
 ceuSection.addEventListener("click", () => {
+<<<<<<< HEAD
   ceuSection.style.display = "none";
   tempoSection.style.display = "flex";
+=======
+  exibirSeccao(tempoSection);
   const audio = new Audio("assets/song.mp3");
   audio.loop = true;
   audio.play();
+>>>>>>> 123ae73a5b3eb35d47e3b925c673af8a4866c26c
 });
 
 // Inicializa as funcionalidades ao carregar a página
