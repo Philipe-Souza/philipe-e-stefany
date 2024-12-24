@@ -46,6 +46,7 @@ const authSection = document.getElementById("auth");
 const fraseCeu = document.getElementById("frase-ceu");
 const allSections = document.querySelectorAll(".content");
 const imgNos = document.getElementById("nos-img");
+var musicaAtual = "Maria.mp3";
 
 const frases = [
   "Te encontrar foi como olhar pro céu e encontrar entre todas as estrelas a mais brilhante",
@@ -200,14 +201,12 @@ const verificarAcesso = () => {
         const snapshot = await get(userRef);
         const dataAtual = obterDataAtual();
         var fraseAtual = "Te encontrar foi como olhar pro céu e encontrar entre todas as estrelas a mais brilhante";
-        var musicaAtual = "Maria.mp3";
 
         if (!snapshot.exists()) {
           // Primeiro acesso: salva a data e a frase no Firebase
           const imagemInicial = await carregarImagemAleatoria(); // Obtém a primeira imagem
           await set(userRef, { data: dataAtual, frase: fraseAtual, imagem: imagemInicial, musica: musicaAtual});
           fraseCeu.textContent = fraseAtual;
-          tocarMusica(musicaAtual); // toca musica
           imgNos.src = imagemInicial;
         } else {
           const ultimoAcesso = snapshot.val();
@@ -222,18 +221,17 @@ const verificarAcesso = () => {
             } while (frase === ultimoAcesso.frase);
 
             do {
-              var music = musicas[Math.floor(Math.random() * frases.length)];
-            } while (music === ultimoAcesso.musica);
+              musicaAtual = musicas[Math.floor(Math.random() * frases.length)];
+            } while (musicaAtual === ultimoAcesso.musica);
 
-            await set(userRef, { data: dataAtual, frase: frase, imagem: novaImagem, musica: music});
+            await set(userRef, { data: dataAtual, frase: frase, imagem: novaImagem, musica: musicaAtual});
             imgNos.src = novaImagem;
             fraseCeu.textContent = frase; // Exibe no HTML
-            tocarMusica(music); // toca musica
           } else {
             // Já acessou hoje: exibe a frase atual do banco
             imgNos.src = ultimoAcesso.imagem; // Recarrega a imagem anterior
             fraseCeu.textContent = ultimoAcesso.frase};
-            tocarMusica(ultimoAcesso.musica); // toca musica
+            musicaAtual = ultimoAcesso.musica;
           }
       } catch (error) {
         console.error("Erro ao acessar o banco de dados:", error);
@@ -307,8 +305,8 @@ function inicio() {
   contarDias();
 }
 
-function tocarMusica(musica) {
-  const audio = new Audio(`assets/${musica}`);
+function tocarMusica() {
+  const audio = new Audio(`assets/${musicaAtual}`);
   audio.loop = true;
   audio.play();
 };
@@ -321,6 +319,7 @@ document.addEventListener("DOMContentLoaded", () => {
 ceuSection.addEventListener("click", () => {
   ceuSection.style.display = "none";
   tempoSection.style.display = "flex";
+  tocarMusica();
 });
 
 // Retorna a data no formato 'YYYY-MM-DD'
