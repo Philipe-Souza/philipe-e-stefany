@@ -81,7 +81,8 @@ const musicas = [
   "Incondicional.mp3",
   "Maria.mp3",
   "TantosOlharesPorAi.mp3",
-  "TemSentimento.mp3"
+  "TemSentimento.mp3",
+  "MinhaNamorada.mp3"
 ]
 
 // Função para carregar uma imagem aleatória
