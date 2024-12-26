@@ -223,7 +223,7 @@ const verificarAcesso = () => {
             } while (frase === ultimoAcesso.frase);
 
             do {
-              musicaAtual = musicas[Math.floor(Math.random() * frases.length)];
+              musicaAtual = musicas[Math.floor(Math.random() * musicas.length)];
             } while (musicaAtual === ultimoAcesso.musica);
 
             await set(userRef, { data: dataAtual, frase: frase, imagem: novaImagem, musica: musicaAtual});
