@@ -203,7 +203,6 @@ const verificarAcesso = () => {
       try {
         const snapshot = await get(userRef);
         const dataAtual = obterDataAtual();
-        console.log(dataAtual);
         var fraseAtual = "Te encontrar foi como olhar pro céu e encontrar entre todas as estrelas a mais brilhante";
 
         if (!snapshot.exists()) {
