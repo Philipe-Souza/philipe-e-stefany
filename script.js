@@ -203,6 +203,7 @@ const verificarAcesso = () => {
       try {
         const snapshot = await get(userRef);
         const dataAtual = obterDataAtual();
+        console.log(dataAtual);
         var fraseAtual = "Te encontrar foi como olhar pro céu e encontrar entre todas as estrelas a mais brilhante";
 
         if (!snapshot.exists()) {
@@ -342,8 +343,11 @@ playBtn.addEventListener("click", () => {
 });
 
 
-// Retorna a data no formato 'YYYY-MM-DD'
+// Retorna a data no formato 'YYYY-MM-DD' no horário local
 const obterDataAtual = () => {
   const data = new Date();
-  return data.toISOString().split("T")[0]; 
+  const ano = data.getFullYear();
+  const mes = String(data.getMonth() + 1).padStart(2, '0'); // Meses começam em 0
+  const dia = String(data.getDate()).padStart(2, '0');
+  return `${ano}-${mes}-${dia}`;
 };
