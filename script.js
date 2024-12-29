@@ -77,12 +77,17 @@ const frases = [
 ];
 
 const musicas = [
-  "AmorLivre.mp3",
-  "Incondicional.mp3",
-  "Maria.mp3",
-  "TantosOlharesPorAi.mp3",
-  "TemSentimento.mp3",
-  "MinhaNamorada.mp3"
+  //"AmorLivre.mp3",
+  //"Incondicional.mp3",
+  //"Maria.mp3",
+  //"TantosOlharesPorAi.mp3",
+  //"TemSentimento.mp3",
+  //"MinhaNamorada.mp3",
+  "daquiPraFrente.mp3",
+  "modoObsceno.mp3",
+  "prefiroVoce.mp3",
+  "princesinhaMandona.mp3",
+  "vemPraMinhaVida.mp3"
 ]
 
 // Função para carregar uma imagem aleatória
