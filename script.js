@@ -41,7 +41,6 @@ const frases = [
   "Sortudo sou eu. Sete bilhões de pessoas no mundo. E você me escolheu.",
   "Se o amor bateu na nossa porta, que sorte a nossa",
   "Tava escrito nas estrelas que eu ia encontrar você",
-  "Tem brinquedo espalhado pela casa toda e as paredes rabiscadas com o giz de cera",
   "...Mudou de tal maneira, nossa vida já não é a mesma",
   "Ser herói de alguém e, melhor ainda, ter do lado a Mulher Maravilha",
   "Me diz quem não fica louco nesse jeito meigo bobo seu",
@@ -49,15 +48,18 @@ const frases = [
   "Pra falar a verdade eu acho que na última vida eu também te queria",
   "Você me libertou, por favor fique",
   "Eu troco mil estrelas pra te dar a lua, tudo que você quiser",
-  "Deus é bom o tempo todo, e tem nos abençoado muito",
-  "Não importa quanto tempo passe, eu sempre fico bobo com seu sorrio",
+  "Você é um sonhe que se realizou",
+  "Não importa quanto tempo passe, eu sempre fico bobo com seu sorriso",
   "Nunca vou esquecer nosso dia 09/09/2024",
   "Você é incrivel, maravilhosa, perfeita, minha namorada",
-  "Teamo desde sempre e pra sempre vou te amar",
-  "Em breve vamos conquistar nossa casinha",
-  "Nosso sonhos são maravilhosos e eles vão se realizar",
-  "Reza comigo ai",
-  "Eu teamo, em cada detalhe, em cada momento, a cada batida do meu coração"
+  "Eu amo nossos momentos juntos",
+  "E os anjos cantam nosso amor",
+  "Eu teamo, em cada detalhe, em cada momento, a cada batida do meu coração",
+  "Anota ai, eu ainda vou me casar com você",
+  "Você é minha princesa",
+  "Sonho com nossa casinha, nossos filhos e bichinhos",
+  "Quero ser sempre o motivo do seu sorriso, te fazer feliz é o que me deixa felix",
+  "Cuidar, amar e respeitar. Eu prometo"
 ];
 
 const musicas = [
