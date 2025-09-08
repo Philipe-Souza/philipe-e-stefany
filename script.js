@@ -273,7 +273,7 @@ const contarDias = () => {
         const userRef = ref(db, `users/${userId}/ultimoAcesso`);
         get(userRef).then(snapshot => {
           if (snapshot.exists()) {
-            atualizarConteudo(snapshot.val(), 18);
+            atualizarConteudo(snapshot.val());
           }
         });
       }
