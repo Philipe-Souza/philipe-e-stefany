@@ -83,7 +83,6 @@ async function carregarImagemAleatoria(imagemAtual = null) {
         novaImagemURL = await getDownloadURL(imagemAleatoria);
       } while (novaImagemURL === imagemAtual);
 
-      deletarImagemAntiga(imagemAtual);
       return novaImagemURL;
     } else {
       console.warn("Nenhuma imagem encontrada na pasta.");
@@ -95,14 +94,25 @@ async function carregarImagemAleatoria(imagemAtual = null) {
   }
 }
 
-async function deletarImagemAntiga(imagemURL) {
+// ====================== SALVAR ULTIMO ACESSO ======================
+async function salvarUltimoAcesso(frase, imagem, musica) {
   try {
-    if (!imagemURL) return;
-    const caminhoImagem = decodeURIComponent(imagemURL.split('/o/')[1].split('?')[0]);
-    const imagemRef = storageRef(storage, caminhoImagem);
-    await deleteObject(imagemRef);
+    const userId = auth.currentUser?.uid;
+    if (!userId) return;
+
+    const userRef = ref(db, `users/${userId}/ultimoAcesso`);
+    const dataAtual = obterDataAtual();
+    const horaAtual = new Date().getHours();
+
+    await set(userRef, {
+      data: dataAtual,
+      hora: horaAtual,
+      frase,
+      imagem,
+      musica
+    });
   } catch (error) {
-    console.error("Erro ao excluir o arquivo:", error);
+    console.error("Erro ao salvar último acesso:", error);
   }
 }
 
@@ -172,7 +182,7 @@ async function atualizarConteudo(ultimoAcesso, horaAtualSimulada = null) {
   musicaAtual = ultimoAcesso.musica || musicaAtual;
   tocarMusica();
 
-  // Verifica se precisa atualizar para novo dia ou hora >= 18
+  // Verifica se precisa atualizar para novo dia ou hora >= 19
   const dataUltimoAcesso = new Date(ultimoAcesso.data + "T00:00:00");
   const dataHoje = new Date(dataAtual + "T00:00:00");
   let precisaAtualizar = false;
@@ -181,23 +191,21 @@ async function atualizarConteudo(ultimoAcesso, horaAtualSimulada = null) {
   else if (dataUltimoAcesso.getTime() === new Date(dataHoje.getTime() - 24*60*60*1000).getTime() && ultimoAcessoHora < 19) precisaAtualizar = true;
   else if (ultimoAcesso.data === dataAtual && horaAtual >= 19 && ultimoAcessoHora < 19) precisaAtualizar = true;
 
-  if (!precisaAtualizar) return;
+  if (precisaAtualizar) {
+    // Pré-carrega nova imagem, frase e música
+    const novaImagem = await carregarImagemAleatoria(ultimoAcesso.imagem);
+    let frase;
+    do { frase = frases[Math.floor(Math.random()*frases.length)]; } while(frase===ultimoAcesso.frase);
+    do { musicaAtual = musicas[Math.floor(Math.random()*musicas.length)]; } while(musicaAtual===ultimoAcesso.musica);
 
-  // Pré-carrega nova imagem, frase e música
-  const novaImagem = await carregarImagemAleatoria(ultimoAcesso.imagem);
-  let frase;
-  do { frase = frases[Math.floor(Math.random()*frases.length)]; } while(frase===ultimoAcesso.frase);
-  do { musicaAtual = musicas[Math.floor(Math.random()*musicas.length)]; } while(musicaAtual===ultimoAcesso.musica);
+    // Atualiza DOM
+    imgNos.src = novaImagem;
+    fraseCeu.textContent = frase;
+    tocarMusica();
+  }
 
-  // Atualiza DOM
-  imgNos.src = novaImagem;
-  fraseCeu.textContent = frase;
-  tocarMusica();
-
-  // Salva no Firebase
-  const userId = auth.currentUser.uid;
-  const userRef = ref(db, `users/${userId}/ultimoAcesso`);
-  await set(userRef, { data: dataAtual, hora: horaAtual, frase, imagem: novaImagem, musica: musicaAtual });
+  // 🔹 Sempre salva último acesso (mesmo que nada mude)
+  await salvarUltimoAcesso(fraseCeu.textContent, imgNos.src, musicaAtual);
 }
 
 // ====================== VERIFICAR ACESSO ======================
@@ -222,12 +230,13 @@ const verificarAcesso = () => {
         const horaAtual = new Date().getHours();
         const fraseAtual = frases[0];
         const imagemInicial = await carregarImagemAleatoria();
-        await set(userRef, { data: dataAtual, hora: horaAtual, frase: fraseAtual, imagem: imagemInicial, musica: musicaAtual });
         imgNos.src = imagemInicial;
         fraseCeu.textContent = fraseAtual;
+
+        await salvarUltimoAcesso(fraseAtual, imagemInicial, musicaAtual);
       } else {
-        // Pré-carrega imagem 5 segundos antes se necessário
-        atualizarConteudo(snapshot.val());
+        // Se já existe, atualiza normalmente
+        await atualizarConteudo(snapshot.val());
       }
 
     } catch (error) {
