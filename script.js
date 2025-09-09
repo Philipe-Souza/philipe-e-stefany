@@ -188,8 +188,8 @@ async function atualizarConteudo(ultimoAcesso, horaAtualSimulada = null) {
   let precisaAtualizar = false;
 
   if (dataUltimoAcesso < new Date(dataHoje.getTime() - 24*60*60*1000)) precisaAtualizar = true;
-  else if (dataUltimoAcesso.getTime() === new Date(dataHoje.getTime() - 24*60*60*1000).getTime() && ultimoAcessoHora < 19) precisaAtualizar = true;
-  else if (ultimoAcesso.data === dataAtual && horaAtual >= 19 && ultimoAcessoHora < 19) precisaAtualizar = true;
+  else if (dataUltimoAcesso.getTime() === new Date(dataHoje.getTime() - 24*60*60*1000).getTime() && ultimoAcessoHora < 18) precisaAtualizar = true;
+  else if (ultimoAcesso.data === dataAtual && horaAtual >= 18 && ultimoAcessoHora < 18) precisaAtualizar = true;
 
   if (precisaAtualizar) {
     // Pré-carrega nova imagem, frase e música
