@@ -35,8 +35,7 @@ let musicaAtual = "Maria.mp3";
 // ====================== DADOS ======================
 const frases = [
   "Eu teamo, em cada detalhe, em cada momento, a cada batida do meu coração",
-  "1 Ano de muitas conquistas e felicidade. É incrivel dividir a vida com voce meu amor!"
-  /*"Te encontrar foi como olhar pro céu e encontrar entre todas as estrelas a mais brilhante",
+  "Te encontrar foi como olhar pro céu e encontrar entre todas as estrelas a mais brilhante",
   "Voce coloriu minha vida cinza amor",
   "E a cada sorriso seu meu mundo ganha mais cor",
   "Tenho certeza que vamos conquistar nossos sonhos",
@@ -61,7 +60,7 @@ const frases = [
   "Você é minha princesa",
   "Sonho com nossa casinha, nossos filhos e bichinhos",
   "Quero ser sempre o motivo do seu sorriso, te fazer feliz é o que me deixa felix",
-  "Cuidar, amar e respeitar. Eu prometo"*/
+  "Cuidar, amar e respeitar. Eu prometo"
 ];
 
 const musicas = [
